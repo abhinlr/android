@@ -113,12 +113,25 @@ const DOMElements = {
 let pollTimer = null;
 let processedData = []; // Cached sorted & filtered data
 
+function setupMenu() {
+  const btn = document.getElementById('settingsBtn');
+  const panel = document.getElementById('settingsPanel');
+  const overlay = document.getElementById('settingsOverlay');
+  const close = document.getElementById('settingsClose');
+  const open = () => { panel.classList.add('open'); overlay.classList.add('open'); };
+  const shut = () => { panel.classList.remove('open'); overlay.classList.remove('open'); };
+  btn.addEventListener('click', open);
+  close.addEventListener('click', shut);
+  overlay.addEventListener('click', shut);
+}
+
 // Initialization
 async function init() {
+  setupMenu();
   setupEventListeners();
   setupFABs();
   await fetchData();
-  
+
   // Start polling every 30 seconds
   pollTimer = setInterval(fetchData, 30000);
 }
@@ -486,7 +499,7 @@ function renderTable(forceFullRender = false) {
 
     html += `<tr class="${newCoinClass}">`;
     html += `<td class="sticky-col sl-cell">${slNumber++}</td>`;
-    html += `<td class="sticky-col-2 symbol-cell ${newCoinClass}">${baseAsset} <span class="symbol-pair">/ USDT</span></td>`;
+    html += `<td class="sticky-col-2 symbol-cell ${newCoinClass}">${baseAsset}</td>`;
     
     row.history.forEach((hist, index) => {
       const pricePctClass = hist.priceChangePct > 0 ? 'trend-up' : (hist.priceChangePct < 0 ? 'trend-down' : 'trend-neutral');
