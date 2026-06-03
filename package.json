@@ -1,0 +1,21 @@
+{
+  "name": "binance-spot-dashboard",
+  "version": "1.0.0",
+  "description": "Binance Spot USDT Dashboard with custom intervals",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "cap:build": "npx cap copy android && npx cap sync android"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "p-limit": "^3.1.0"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.2.1",
+    "@capacitor/cli": "^6.2.1",
+    "@capacitor/core": "^6.2.1"
+  }
+}

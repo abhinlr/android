@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binance Spot Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#161b22">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+</head>
+<body>
+  <div class="dashboard-container">
+    <header class="topbar">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-activity"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        <h1>Spot Matrix</h1>
+      </div>
+      
+      <div class="controls">
+        <div class="control-group search-group">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="searchInput" placeholder="Search symbol... (e.g. BTC)">
+        </div>
+
+        <div class="control-group">
+          <label for="intervalSelect">Interval</label>
+          <select id="intervalSelect">
+            <option value="30s">30s (Max 32 past)</option>
+            <option value="1m" selected>1m</option>
+            <option value="3m">3m</option>
+            <option value="5m">5m</option>
+            <option value="15m">15m</option>
+            <option value="30m">30m</option>
+            <option value="1h">1h</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="filterInput">% Filter</label>
+          <div class="filter-input-wrapper">
+            <span>±</span>
+            <input type="number" id="filterInput" value="1.0" step="0.1" min="0">
+            <span>%</span>
+          </div>
+        </div>
+        
+        <button id="sortStreakBtn" class="control-btn" title="Sort by longest consecutive streak">
+          🔥 Sort by Streak
+        </button>
+
+        <label class="toggle-switch">
+          <input type="checkbox" id="hideUnfilteredToggle">
+          <span class="slider"></span>
+          <span class="label-text">Hide Unmatched</span>
+        </label>
+
+        <label class="toggle-switch">
+          <input type="checkbox" id="hideVolumeToggle" checked>
+          <span class="slider"></span>
+          <span class="label-text">Hide Volume</span>
+        </label>
+      </div>
+    </header>
+
+    <main class="table-container">
+      <div id="loading" class="loading-state hidden">
+        <div class="spinner"></div>
+        <p>Loading market data...</p>
+      </div>
+      
+      <table id="dataTable" class="spreadsheet-table">
+        <thead id="tableHead">
+          <!-- Headers injected dynamically via JS -->
+        </thead>
+        <tbody id="tableBody">
+          <!-- Rows injected dynamically via JS -->
+        </tbody>
+      </table>
+    </main>
+
+    <!-- Floating Navigation Buttons -->
+    <div id="fabContainer" class="fab-container">
+      <button id="fabUp" class="fab-btn hidden" title="Up (Click: Page, Hold: Top)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+      </button>
+      <button id="fabDown" class="fab-btn" title="Down (Click: Page, Hold: Bottom)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+    </div>
+
+    <button id="fabLeft" class="fab-btn fab-left hidden" title="Go to Current Time">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      Current
+    </button>
+  </div>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+</body>
+</html>

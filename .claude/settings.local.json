@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(java *)",
+      "PowerShell(ls \"C:\\\\Program Files\\\\Android\" 2>&1; ls \"$env:LOCALAPPDATA\\\\Android\" 2>&1 | Select-Object -First 5)",
+      "PowerShell(Compress-Archive *)",
+      "PowerShell(\\(Get-Item \"C:\\\\Users\\\\Abhijith\\\\Downloads\\\\Telegram Desktop\\\\compare app\\\\android.zip\"\\).Length / 1MB)"
+    ]
+  }
+}
