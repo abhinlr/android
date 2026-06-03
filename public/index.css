@@ -559,3 +559,110 @@ select option { background-color: var(--bg-panel); }
   text-align: center;
 }
 
+.settings-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 4px 0;
+}
+
+.unit-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.notif-options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.notif-options.hidden { display: none; }
+
+/* ── Desktop / Tablet: inline expanded header ── */
+@media (min-width: 900px) {
+  .settings-btn { display: none; }
+  .settings-overlay { display: none !important; }
+
+  .topbar {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0;
+    padding: 10px 20px;
+  }
+
+  .settings-panel {
+    position: static !important;
+    transform: none !important;
+    width: auto;
+    height: auto;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    background: transparent;
+    border: none;
+    overflow: visible;
+    min-height: 0;
+  }
+
+  .settings-header { display: none; }
+
+  .settings-body {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0;
+    gap: 8px;
+    overflow: visible;
+    justify-content: flex-end;
+  }
+
+  .setting-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+  }
+  .setting-row-toggle { gap: 8px; }
+
+  .setting-label {
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .setting-row .control-group { width: auto; }
+  .setting-row .search-group input { width: 110px; }
+  .setting-row .control-group select { width: auto; }
+  .setting-row .control-group input[type="text"] { width: auto; }
+
+  .control-btn.full-width {
+    width: auto;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+  }
+
+  .settings-divider {
+    width: 1px;
+    height: 22px;
+    background: var(--border-color);
+    margin: 0 6px;
+    align-self: center;
+  }
+
+  /* Always show notification options on desktop */
+  .notif-options.hidden {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+  .notif-options {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+  .notif-options .setting-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  }
+}
+

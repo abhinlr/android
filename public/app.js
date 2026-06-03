@@ -125,9 +125,140 @@ function setupMenu() {
   overlay.addEventListener('click', shut);
 }
 
+// ── Notifications ──────────────────────────────────────────
+
+const notifSettings = {
+  enabled: JSON.parse(localStorage.getItem('notif_enabled') || 'false'),
+  minStreak: parseInt(localStorage.getItem('notif_minStreak') || '3'),
+  minPct: parseFloat(localStorage.getItem('notif_minPct') || '1.0'),
+  tone: localStorage.getItem('notif_tone') || 'beep'
+};
+
+const notifiedCoins = new Map();
+
+function saveNotifSettings() {
+  localStorage.setItem('notif_enabled', JSON.stringify(notifSettings.enabled));
+  localStorage.setItem('notif_minStreak', String(notifSettings.minStreak));
+  localStorage.setItem('notif_minPct', String(notifSettings.minPct));
+  localStorage.setItem('notif_tone', notifSettings.tone);
+}
+
+function playAlertTone(type) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    function tone(freq, start, dur, vol = 0.35) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(vol, ctx.currentTime + start);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + dur);
+      osc.start(ctx.currentTime + start);
+      osc.stop(ctx.currentTime + start + dur + 0.05);
+    }
+    switch (type) {
+      case 'beep':   tone(880, 0, 0.18); break;
+      case 'double': tone(880, 0, 0.1); tone(880, 0.18, 0.1); break;
+      case 'chime':  tone(1047, 0, 0.2); tone(784, 0.22, 0.2); tone(523, 0.44, 0.3); break;
+      case 'alert':  tone(660, 0, 0.08); tone(880, 0.1, 0.08); tone(660, 0.2, 0.08); tone(880, 0.3, 0.15); break;
+    }
+  } catch (e) {}
+}
+
+async function showStreakNotification(title, body) {
+  if (Notification.permission !== 'granted') return;
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    reg.showNotification(title, {
+      body, icon: '/icon-192.png', badge: '/icon-192.png',
+      tag: title, renotify: true, vibrate: [200, 100, 200]
+    });
+  } catch {
+    new Notification(title, { body, icon: '/icon-192.png' });
+  }
+}
+
+function checkStreakNotifications(data) {
+  if (!notifSettings.enabled || Notification.permission !== 'granted') return;
+  data.forEach(row => {
+    const { symbol, streakCount, streakType, history } = row;
+    if (!history || history.length === 0) return;
+    const pct = Math.abs(history[0].priceChangePct);
+    if (streakCount >= notifSettings.minStreak && pct >= notifSettings.minPct) {
+      const prev = notifiedCoins.get(symbol);
+      if (!prev || streakCount > prev.count || streakType !== prev.type) {
+        notifiedCoins.set(symbol, { count: streakCount, type: streakType });
+        const base = symbol.replace('USDT', '');
+        const sign = streakType === 'bull' ? '+' : '-';
+        showStreakNotification(
+          `🔥 ${base} ×${streakCount} streak`,
+          `${sign}${pct.toFixed(2)}% per candle, ${streakCount} consecutive`
+        );
+        playAlertTone(notifSettings.tone);
+      }
+    } else {
+      notifiedCoins.delete(symbol);
+    }
+  });
+}
+
+function setupNotifications() {
+  const toggle   = document.getElementById('notifEnabledToggle');
+  const options  = document.getElementById('notifOptions');
+  const streakIn = document.getElementById('notifStreakInput');
+  const pctIn    = document.getElementById('notifPctInput');
+  const toneEl   = document.getElementById('notifToneSelect');
+  const testBtn  = document.getElementById('testToneBtn');
+
+  toggle.checked = notifSettings.enabled;
+  streakIn.value = notifSettings.minStreak;
+  pctIn.value    = notifSettings.minPct;
+  toneEl.value   = notifSettings.tone;
+
+  function syncOptionsVisibility() {
+    if (window.innerWidth < 900) {
+      options.classList.toggle('hidden', !notifSettings.enabled);
+    } else {
+      options.classList.remove('hidden');
+    }
+  }
+  syncOptionsVisibility();
+  window.addEventListener('resize', syncOptionsVisibility);
+
+  toggle.addEventListener('change', async () => {
+    if (toggle.checked && Notification.permission !== 'granted') {
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') { toggle.checked = false; return; }
+    }
+    notifSettings.enabled = toggle.checked;
+    saveNotifSettings();
+    syncOptionsVisibility();
+  });
+
+  streakIn.addEventListener('change', () => {
+    notifSettings.minStreak = parseInt(streakIn.value) || 3;
+    saveNotifSettings();
+  });
+
+  pctIn.addEventListener('change', () => {
+    notifSettings.minPct = parseFloat(pctIn.value) || 1.0;
+    saveNotifSettings();
+  });
+
+  toneEl.addEventListener('change', () => {
+    notifSettings.tone = toneEl.value;
+    saveNotifSettings();
+  });
+
+  testBtn.addEventListener('click', () => playAlertTone(notifSettings.tone));
+}
+
 // Initialization
 async function init() {
   setupMenu();
+  setupNotifications();
   setupEventListeners();
   setupFABs();
   await fetchData();
@@ -299,6 +430,7 @@ async function fetchData() {
       state.data = validResults;
       renderHeaders(validResults[0].history);
       processDataAndRender();
+      checkStreakNotifications(state.data);
     } else {
       DOMElements.tableHead.innerHTML = `<tr><th>Error</th></tr>`;
       DOMElements.tableBody.innerHTML = `<tr><td>No data returned from Binance API.</td></tr>`;

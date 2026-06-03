@@ -24,76 +24,124 @@
       <button id="settingsBtn" class="settings-btn" title="Controls">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><circle cx="12" cy="4" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="16" cy="20" r="2"/></svg>
       </button>
+
+      <div id="settingsPanel" class="settings-panel">
+        <div class="settings-header">
+          <span>Controls</span>
+          <button id="settingsClose" class="settings-close">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div class="settings-body">
+
+          <div class="setting-row">
+            <span class="setting-label">Search</span>
+            <div class="control-group search-group">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="searchInput" placeholder="BTC, ETH...">
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">Interval</span>
+            <div class="control-group">
+              <select id="intervalSelect">
+                <option value="30s">30s</option>
+                <option value="1m" selected>1m</option>
+                <option value="3m">3m</option>
+                <option value="5m">5m</option>
+                <option value="15m">15m</option>
+                <option value="30m">30m</option>
+                <option value="1h">1h</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">% Filter</span>
+            <div class="control-group">
+              <div class="filter-input-wrapper">
+                <span>±</span>
+                <input type="number" id="filterInput" value="1.0" step="0.1" min="0">
+                <span>%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <button id="sortStreakBtn" class="control-btn full-width">🔥 Streak Sort</button>
+          </div>
+
+          <div class="setting-row setting-row-toggle">
+            <span class="setting-label">Hide Unmatched</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="hideUnfilteredToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row setting-row-toggle">
+            <span class="setting-label">Hide Volume</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="hideVolumeToggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="settings-divider"></div>
+
+          <div class="setting-row setting-row-toggle">
+            <span class="setting-label">🔔 Streak Alerts</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="notifEnabledToggle">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div id="notifOptions" class="notif-options hidden">
+
+            <div class="setting-row">
+              <span class="setting-label">Min Streak</span>
+              <div class="control-group">
+                <input type="number" id="notifStreakInput" value="3" min="2" max="20" step="1">
+                <span class="unit-label">×</span>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <span class="setting-label">Min % / candle</span>
+              <div class="control-group">
+                <div class="filter-input-wrapper">
+                  <span>±</span>
+                  <input type="number" id="notifPctInput" value="1.0" min="0.1" step="0.1">
+                  <span>%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <span class="setting-label">Alert Tone</span>
+              <div class="control-group">
+                <select id="notifToneSelect">
+                  <option value="beep">Beep</option>
+                  <option value="double">Double Beep</option>
+                  <option value="chime">Chime</option>
+                  <option value="alert">Alert</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="setting-row">
+              <button id="testToneBtn" class="control-btn full-width">▶ Test Tone</button>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
     </header>
 
     <div id="settingsOverlay" class="settings-overlay"></div>
-    <div id="settingsPanel" class="settings-panel">
-      <div class="settings-header">
-        <span>Controls</span>
-        <button id="settingsClose" class="settings-close">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-        </button>
-      </div>
-      <div class="settings-body">
-
-        <div class="setting-row">
-          <span class="setting-label">Search Symbol</span>
-          <div class="control-group search-group">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" id="searchInput" placeholder="BTC, ETH...">
-          </div>
-        </div>
-
-        <div class="setting-row">
-          <span class="setting-label">Interval</span>
-          <div class="control-group">
-            <select id="intervalSelect">
-              <option value="30s">30s (Max 32 past)</option>
-              <option value="1m" selected>1m</option>
-              <option value="3m">3m</option>
-              <option value="5m">5m</option>
-              <option value="15m">15m</option>
-              <option value="30m">30m</option>
-              <option value="1h">1h</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="setting-row">
-          <span class="setting-label">% Filter</span>
-          <div class="control-group">
-            <div class="filter-input-wrapper">
-              <span>±</span>
-              <input type="number" id="filterInput" value="1.0" step="0.1" min="0">
-              <span>%</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="setting-row">
-          <button id="sortStreakBtn" class="control-btn full-width" title="Sort by longest consecutive streak">
-            🔥 Sort by Streak
-          </button>
-        </div>
-
-        <div class="setting-row setting-row-toggle">
-          <span class="setting-label">Hide Unmatched</span>
-          <label class="toggle-switch">
-            <input type="checkbox" id="hideUnfilteredToggle">
-            <span class="slider"></span>
-          </label>
-        </div>
-
-        <div class="setting-row setting-row-toggle">
-          <span class="setting-label">Hide Volume</span>
-          <label class="toggle-switch">
-            <input type="checkbox" id="hideVolumeToggle" checked>
-            <span class="slider"></span>
-          </label>
-        </div>
-
-      </div>
-    </div>
 
     <main class="table-container">
       <div id="loading" class="loading-state hidden">
